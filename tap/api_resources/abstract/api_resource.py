@@ -1,7 +1,10 @@
 from __future__ import absolute_import, division, print_function
 
 import tap
+import tap.api_resources
+import tap.api_resources.card
 from tap.tap_object import TapObject
+import tap.util
 
 try:
     from urllib import quote_plus  # Python 2.X
@@ -25,13 +28,17 @@ class APIResource(TapObject):
 
     def instance_url(self):
         id = self.get('id')
+        """
+        Returns a fully qualified url for this object.
+
+        The id value is `quote_plus`-ed to ensure it is properly escaped.
+        """
 
         # if not isinstance(id, tap.six.string_types):
         #     raise tap.error.InvalidRequestError(
         #         'could not determine wich url to request : instance %s'
         #         ' has invalid ID %r, %s ID should be type `str`'
         #         % (type(self).__name__, type(id), 'id'))
-
         id = tap.util.utf8(id)
         base = self.class_url()
         extn = quote_plus(id)
@@ -46,4 +53,5 @@ class APIResource(TapObject):
 
         base = cls.OBJECT_NAME.replace('.', '/')
         return "/v2/%ss" % (base,)
-
+    
+   

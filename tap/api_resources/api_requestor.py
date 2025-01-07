@@ -8,11 +8,14 @@ import json
 import platform
 import time
 import uuid
+import tap.api_resources
 import tap.api_resources.http_client as http_client
 import tap.api_resources.error as error
 
 import tap
 from tap.response import ApiResponse
+import tap.six
+import tap.util
 
 
 try:
@@ -110,7 +113,7 @@ class APIRequestor(object):
             my_api_key = api_key
 
         if my_api_key is None:
-            raise tap.error.AuthenticationError(
+            raise tap.api_resources.error.AuthenticationError(
                 'No API key provided. (HINT: set your API key using '
                 '"tap.api_key = <API-KEY>"). You can generate API keys '
                 'from the Tap web interface.  See https://tap.com/api '
@@ -142,12 +145,12 @@ class APIRequestor(object):
                 # post_data = generator.get_post_data()
                 # supplied_headers["Content-Type"] = \
                 #     "multipart/form-data; boundary=%s" % (generator.boundary,)
-                raise tap.error.APIConnectionError(
+                raise tap.api_resources.error.APIConnectionError(
                     'Multipart is not supported for now ...')
             else:
                 post_data = encoded_params
         else:
-            raise tap.error.APIConnectionError(
+            raise tap.api_resources.error.APIConnectionError(
                 'Unrecognized HTTP method %r.  This may indicate a bug in the '
                 'Tap bindings.  Please contact support@tap.com for '
                 'assistance.' % (method,))
@@ -192,7 +195,7 @@ class APIRequestor(object):
                 rbody = rbody.decode('utf-8')
             resp = ApiResponse(rbody, rcode, rheaders)
         except Exception:
-            raise tap.error.APIError(
+            raise tap.api_resources.error.APIError(
                 "Invalid response body from API: %s "
                 "(HTTP response code was %d)" % (rbody, rcode),
                 rbody, rcode, rheaders)
@@ -205,7 +208,7 @@ class APIRequestor(object):
         try:
             error_data = resp['error']
         except (KeyError, TypeError):
-            raise tap.error.APIError(
+            raise tap.api_resources.error.APIError(
                 "Invalid response object from API: %r (HTTP response code "
                 "was %d)" % (rbody, rcode),
                 rbody, rcode, resp)
@@ -220,7 +223,7 @@ class APIRequestor(object):
         #         rbody, rcode, resp, rheaders, error_data)
 
         if err is None:
-            return tap.error.APIError(
+            return tap.api_resources.error.APIError(
                 error_data.get('message'), rbody, rcode, resp, rheaders)
 
         raise err

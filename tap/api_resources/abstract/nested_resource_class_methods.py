@@ -2,6 +2,9 @@ from __future__ import absolute_import, division, print_function
 
 # from tap import api_requestor, util
 import tap
+import tap.api_resources
+import tap.api_resources.api_requestor
+import tap.util
 try:
     from urllib import quote_plus  # Python 2.X
 except ImportError:
@@ -27,7 +30,7 @@ def nested_resource_class_methods(resource, path=None, operations=None):
         def nested_resource_request(cls, method, url, api_key=None,
                                     idempotency_key=None, tap_version=None,
                                     tap_account=None, **params):
-            requestor = tap.api_requestor.APIRequestor(api_key,
+            requestor = tap.api_resources.api_requestor.APIRequestor(api_key,
                                                    api_version=tap_version,
                                                    account=tap_account)
             headers = tap.util.populate_headers(idempotency_key)

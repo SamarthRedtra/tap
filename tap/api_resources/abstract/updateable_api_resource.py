@@ -1,7 +1,10 @@
 from __future__ import absolute_import, division, print_function
 
 import tap
+import tap.api_resources
 from tap.api_resources.abstract.api_resource import APIResource
+import tap.api_resources.api_requestor
+import tap.util
 try:
     from urllib import quote_plus  # Python 2.X
 except ImportError:
@@ -14,7 +17,7 @@ class UpdateableAPIResource(APIResource):
     def _modify(cls, url, api_key=None, tap_version=None,
                 tap_account=None, **params):
 
-        requestor = tap.api_requestor.APIRequestor(api_key, api_version=tap_version,
+        requestor = tap.api_resources.api_requestor.APIRequestor(api_key, api_version=tap_version,
                                                account=tap_account)
 
         response, api_key = requestor.request('put', url, params)
