@@ -1,4 +1,3 @@
-from past.builtins import basestring
 from builtins import object
 import sys
 import operator
@@ -76,7 +75,7 @@ if PY3:
 
     MAXSIZE = sys.maxsize
 else:
-    string_types = basestring,
+    string_types = "",
     integer_types = (int, long)
     class_types = (type, types.ClassType)
     text_type = unicode

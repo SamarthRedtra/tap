@@ -8,8 +8,8 @@ import json
 import platform
 import time
 import uuid
-from tap import http_client
-import tap.error
+import tap.api_resources.http_client as http_client
+import tap.api_resources.error as error
 
 import tap
 from tap.response import ApiResponse

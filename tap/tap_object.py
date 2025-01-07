@@ -1,9 +1,9 @@
 from builtins import hex
 from builtins import str
 
-from . import six
-from . import api_requestor
-from . import util
+from tap import six
+import tap.api_resources.api_requestor as api_requestor
+from tap import util
 import json
 
 
