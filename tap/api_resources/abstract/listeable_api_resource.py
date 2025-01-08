@@ -6,6 +6,7 @@ from tap.api_resources.abstract.api_resource import APIResource
 import tap.api_resources.api_requestor
 
 
+
 class ListeableAPIResource(APIResource):
 
     @classmethod

@@ -1,4 +1,4 @@
-from .abstract import APIResource
+from tap.api_resources.abstract import APIResource
 
 
 

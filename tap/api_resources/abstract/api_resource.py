@@ -2,7 +2,6 @@ from __future__ import absolute_import, division, print_function
 
 import tap
 import tap.api_resources
-import tap.api_resources.card
 from tap.tap_object import TapObject
 import tap.util
 

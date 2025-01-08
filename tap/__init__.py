@@ -1,5 +1,5 @@
 __version__ = "0.0.1"
-api_key = 'sk_test_XKokBfNWv6FIYuTMg5sLPjhJ'
+api_key = 'sk_test_mtqi2RGWJ8cFjCzYuH3hkBNo'
 client_id = None
 api_base = 'https://api.tap.company'
 api_version = None
