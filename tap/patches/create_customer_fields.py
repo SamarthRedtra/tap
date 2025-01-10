@@ -1,0 +1,71 @@
+from frappe.custom.doctype.custom_field.custom_field import create_custom_field
+import frappe
+from frappe import _
+
+def execute():
+    add_customer_custom_fields()
+    add_for_user_custom_fields()
+    
+
+
+def add_for_user_custom_fields():
+    custom_fields = [
+        {
+            'fieldname': 'customer_id',
+            'label': 'Customer ID',
+            'fieldtype': 'Data',
+            'insert_after': 'username',
+            'read_only': 1,
+            'description': 'Indicates if the user is a member'
+        }
+    ]
+    for field in custom_fields:
+        try:
+            if not frappe.get_meta('User').has_field(field['fieldname']):
+                create_custom_field('User', field)
+                print(f"Custom field '{field['label']}' added successfully.")
+            else:
+                print(f"Custom field '{field['label']}' already exists.")
+        except Exception as e:
+            frappe.log_error(message=str(e), title=_("Custom Field Creation Error"))
+            print(f"Error adding custom field '{field['label']}': {str(e)}")
+            continue    
+
+def add_customer_custom_fields():
+    custom_fields = [
+        {
+            'fieldname': 'customer_id',
+            'label': 'Customer ID',
+            'fieldtype': 'Data',
+            'insert_after': 'customer_name',
+            'read_only': 1,
+            'description': 'Indicates if the user is a member'
+        },
+        {
+            'fieldname': 'source_web',
+            'label': 'Source Web',
+            'fieldtype': 'Check',
+            'insert_after': 'currency',
+            'read_only': 1
+            
+        },
+        {
+            'fieldname': 'nationality',
+            'label': 'Nationality',
+            'fieldtype': 'Data',
+            'insert_after': 'source_web',
+            'read_only': 1
+        }
+    ]
+
+    for field in custom_fields:
+        try:
+            if not frappe.get_meta('Customer').has_field(field['fieldname']):
+                create_custom_field('Customer', field)
+                print(f"Custom field '{field['label']}' added successfully.")
+            else:
+                print(f"Custom field '{field['label']}' already exists.")
+        except Exception as e:
+            frappe.log_error(message=str(e), title=_("Custom Field Creation Error"))
+            print(f"Error adding custom field '{field['label']}': {str(e)}")
+            continue

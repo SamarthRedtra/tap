@@ -58,6 +58,10 @@ def create_charge(customer_id):
         "source": {
             "id": "src_all"
         },
+        "reference":{
+            "order":"SINV-2233"
+            
+        },
         "post": {
             "url": "http://your_website.com/post_url"
         },
@@ -127,8 +131,8 @@ def list_charges(customer_id=None, limit=25, page=1):
     params = {
       "period": {
         "date": {
-          "from": 1516315144000,
-          "to": 1545172744000
+          "from": 1735603200000,
+          "to": 1736541505514
         }
       },
       "status": "",

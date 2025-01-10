@@ -1,0 +1,81 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-01-10 23:24:50.048539",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "public_key",
+  "merchant_id",
+  "live_mode",
+  "column_break_rsud",
+  "secret_key",
+  "base_url",
+  "post_base_url"
+ ],
+ "fields": [
+  {
+   "fieldname": "secret_key",
+   "fieldtype": "Password",
+   "in_list_view": 1,
+   "label": "Secret Key",
+   "reqd": 1
+  },
+  {
+   "fieldname": "public_key",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Public Key"
+  },
+  {
+   "fieldname": "merchant_id",
+   "fieldtype": "Data",
+   "label": "Merchant ID"
+  },
+  {
+   "fieldname": "column_break_rsud",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "base_url",
+   "fieldtype": "Data",
+   "label": "Base Url"
+  },
+  {
+   "default": "0",
+   "fieldname": "live_mode",
+   "fieldtype": "Check",
+   "label": "Live Mode"
+  },
+  {
+   "description": "Put this url as your Current Host Url also please put url end \"/\"",
+   "fieldname": "post_base_url",
+   "fieldtype": "Data",
+   "label": "Post Base Url",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2025-01-11 00:30:20.233925",
+ "modified_by": "Administrator",
+ "module": "Tap",
+ "name": "Tap Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -7,6 +7,7 @@ import os
 import re
 import tap
 from tap.response import ApiResponse
+import frappe
 
 
 TAP_LOG = os.environ.get('TAP_LOG')
@@ -127,3 +128,29 @@ def convert_to_tap_object(resp, api_key=None, tap_version=None,
                                     tap_account=tap_account)
     else:
         return resp
+
+
+
+
+def get_tap():
+    from frappe.utils.password import get_decrypted_password
+
+    if not hasattr(frappe.local, "tap_object"):
+        secret_key = get_decrypted_password(
+            "Tap Settings",
+            "Tap Settings",
+            "secret_key",
+            raise_exception=False,
+        )
+
+        if not secret_key:
+            frappe.throw("Setup stripe via Press Settings before using press.api.billing.get_stripe")
+
+        tap.api_key = secret_key
+        tap.max_network_retries = 2
+        tap.merchant_id = frappe.db.get_value("Tap Settings", None, "merchant_id")
+        tap.live_mode = frappe.db.get_value("Tap Settings", None, "live_mode")
+        tap.post_base_url = frappe.db.get_value("Tap Settings", None, "post_base_url")
+        frappe.local.tap_object = tap
+
+    return frappe.local.tap_object

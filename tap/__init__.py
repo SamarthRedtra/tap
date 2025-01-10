@@ -8,7 +8,9 @@ proxy = None
 default_http_client = None
 app_info = None
 max_network_retries = 0
-
+merchant_id = None
+live_mode = 0
+post_base_url = ""
 # Set to either 'debug' or 'info', controls console logging
 log = None
 

@@ -1,0 +1,114 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-01-10 23:30:37.873502",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "customer_id",
+  "reference_id",
+  "status",
+  "currency",
+  "datetime",
+  "column_break_noei",
+  "payment_id",
+  "charge_id",
+  "amount",
+  "order_id",
+  "section_break_onnz",
+  "log"
+ ],
+ "fields": [
+  {
+   "fieldname": "customer_id",
+   "fieldtype": "Data",
+   "label": "Customer ID"
+  },
+  {
+   "fieldname": "reference_id",
+   "fieldtype": "Data",
+   "label": "Reference ID"
+  },
+  {
+   "fieldname": "column_break_noei",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "payment_id",
+   "fieldtype": "Data",
+   "label": "Payment ID"
+  },
+  {
+   "fieldname": "section_break_onnz",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "log",
+   "fieldtype": "Text",
+   "label": "Log"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Data",
+   "label": "Status"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Data",
+   "label": "Currency"
+  },
+  {
+   "fieldname": "charge_id",
+   "fieldtype": "Data",
+   "label": "Charge ID"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Float",
+   "label": "Amount"
+  },
+  {
+   "fieldname": "order_id",
+   "fieldtype": "Data",
+   "label": "Order ID"
+  },
+  {
+   "fieldname": "datetime",
+   "fieldtype": "Data",
+   "label": "DATETIME"
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-01-11 01:01:02.438315",
+ "modified_by": "Administrator",
+ "module": "Tap",
+ "name": "Payment Log",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "select": 1,
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "All",
+   "select": 1,
+   "share": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
