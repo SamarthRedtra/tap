@@ -50,7 +50,7 @@ def get_customer(id):
 
 def create_charge(customer_id):
     data = {
-        "amount": 10,
+        "amount": 7.87,
         "currency": "KWD",
         "customer": {
             "id": customer_id
@@ -59,15 +59,11 @@ def create_charge(customer_id):
             "id": "src_all"
         },
         "reference":{
-            "order":"SINV-2233"
+            "order":"SINV-22dddd33"
             
         },
-        "post": {
-            "url": "http://your_website.com/post_url"
-        },
-        "redirect": {
-            "url": "http://your_website.com/redirect_url"
-        }
+        "post": {"url": "https://redeetech.com/api/method/redeegym.payments.payment_update_webhook"},
+        "redirect": {"url": "https://redeetech.com/dashboard"}
     }
 
     charge = tap.Charge.create(**data)
@@ -132,7 +128,7 @@ def list_charges(customer_id=None, limit=25, page=1):
       "period": {
         "date": {
           "from": 1735603200000,
-          "to": 1736541505514
+          "to": 1736627905514
         }
       },
       "status": "",
@@ -170,8 +166,8 @@ def create_charge_with_customer_and_card():
         "currency": "KWD",
         "customer": {"id": customer["id"]},
         "source": {"id": card["id"]},
-        "post": {"url": "https://yourwebsite.com/post_url"},
-        "redirect": {"url": "https://yourwebsite.com/redirect_url"}
+        "post": {"url": "https://redeetech.com/api/method/redeegym.payments.payment_update_webhook"},
+        "redirect": {"url": "https://redeetech.com/dashboard"}
     }
     charge = tap.Charge.create(**charge_data)
 
@@ -188,4 +184,11 @@ def create_charge_with_customer():
     customer_id = get_customer(customer.id)
     print("customer_id", customer_id)
     charge = create_charge(customer_id.id)
+    return charge
+
+
+
+@frappe.whitelist(allow_guest=True)
+def get_charge(charge_id="chg_TS01A0820250051j2RO1101307"):
+    charge = tap.Charge.retrieve(charge_id)
     return charge

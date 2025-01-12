@@ -6,7 +6,7 @@ class CustomCustomer(Customer):
     def before_insert(self):
         if self.get('source_web',None) == 1:
             tap = get_tap()
-            resp = tap.Customer.create({
+            resp = tap.Customer.create(**{
                 "first_name": self.customer_name.split(' ')[0],
                 "last_name": self.customer_name.split(' ')[1],
                 "email": self.email_id,
@@ -18,5 +18,6 @@ class CustomCustomer(Customer):
                 }
             })
             self.customer_id = resp["id"]
+            frappe.db.set_value('User',frappe.session.user,'customer_id',self.customer_id)
 
 

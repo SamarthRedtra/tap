@@ -144,9 +144,11 @@ def get_tap():
         )
 
         if not secret_key:
-            frappe.throw("Setup stripe via Press Settings before using press.api.billing.get_stripe")
+            if tap.api_key is None:
+                frappe.throw("Setup Tap via Tap Settings before using this method")
+            
 
-        tap.api_key = secret_key
+        #tap.api_key = secret_key
         tap.max_network_retries = 2
         tap.merchant_id = frappe.db.get_value("Tap Settings", None, "merchant_id")
         tap.live_mode = frappe.db.get_value("Tap Settings", None, "live_mode")
