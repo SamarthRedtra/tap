@@ -4,5 +4,5 @@
 
 [post_model_sync]
 # Patches added in this section will be executed after doctypes are migrated
-tap.patches.create_customer_fields # 2025-01-11 2
-tap.patches.create_mode_of_payment # 2025-01-11 2
+tap.patches.create_customer_fields # 2025-01-11 5uu6rttttrrr
+tap.patches.create_mode_of_payment # 2025-01-11 25trtfr

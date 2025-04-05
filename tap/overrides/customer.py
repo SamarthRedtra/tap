@@ -18,6 +18,6 @@ class CustomCustomer(Customer):
                 }
             })
             self.customer_id = resp["id"]
-            frappe.db.set_value('User',frappe.session.user,'customer_id',self.customer_id)
+            frappe.db.set_value('User',self.email_id,'customer_id',self.customer_id)
 
 
