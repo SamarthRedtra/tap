@@ -110,6 +110,7 @@ class TapSettings(Document):
 def tap_charge_webhook(**kwargs):
 	"""Webhook to handle Tap payment status updates"""
 	try:
+		frappe.set_user('Administrator')
 		data = frappe.parse_json(kwargs)
 		charge = data
 		status = charge.get("status")
