@@ -2,6 +2,8 @@
 # For license information, please see license.txt
 
 import frappe
+import datetime
+from datetime import datetime, timedelta,timezone
 from frappe.model.document import Document
 from frappe.integrations.utils import create_request_log, make_get_request
 from frappe.utils import call_hook_method, cint, flt, get_url
@@ -109,9 +111,12 @@ def tap_charge_webhook(**kwargs):
 	"""Webhook to handle Tap payment status updates"""
 	try:
 		data = frappe.parse_json(kwargs)
-		event_type = data.get("type")
-		charge = data.get("object", {}).get("charge") or data.get("object", {})
+		charge = data
 		status = charge.get("status")
+		transaction_date = format_timestamp_frappe(
+            data.get("transaction", {}).get("created"),
+            data.get("transaction", {}).get("timezone")
+        )
 		payment_request_id = charge.get("metadata", {}).get("payment_request_id") or charge.get("reference", {}).get("transaction")
 		integration_request_id = charge.get("metadata", {}).get("integration_request_id") or charge.get("reference", {}).get("internal_reference")
 		
@@ -142,5 +147,22 @@ def tap_charge_webhook(**kwargs):
 		frappe.log_error(frappe.get_traceback(), "Tap Charge Webhook Error")   
 		
         
-    
+
+def format_timestamp_frappe(timestamp_ms, timezone_str):
+    # Convert milliseconds to seconds
+    timestamp_sec = int(timestamp_ms) / 1000.0
+
+    # Create a timezone-aware datetime object in UTC
+    utc_dt = datetime.fromtimestamp(timestamp_sec, tz=timezone.utc)
+
+    # Manually adjust for the timezone offset if needed
+    # Extract hours and minutes from timezone string, e.g., "UTC+03:00" -> (3, 0)
+    offset_hours, offset_minutes = map(int, timezone_str[4:].split(':'))
+    timezone_offset = timedelta(hours=offset_hours, minutes=offset_minutes)
+    local_dt = utc_dt + timezone_offset
+
+    # Format the datetime object to the specified format
+    formatted_date = local_dt.strftime('%d %b %Y %I:%M %p')
+
+    return formatted_date    
     
