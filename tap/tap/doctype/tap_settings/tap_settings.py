@@ -105,10 +105,10 @@ class TapSettings(Document):
    
 
 @frappe.whitelist(allow_guest=True)
-def tap_charge_webhook():
+def tap_charge_webhook(**kwargs):
 	"""Webhook to handle Tap payment status updates"""
 	try:
-		data = frappe.request.get_json()
+		data = frappe.parse_json(kwargs)
 		event_type = data.get("type")
 		charge = data.get("object", {}).get("charge") or data.get("object", {})
 		status = charge.get("status")
