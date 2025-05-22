@@ -135,6 +135,7 @@ def tap_charge_webhook(**kwargs):
 			frappe.db.set_value("Integration Request", integration_request_id, "status", "Completed", update_modified=False)
 
 			frappe.logger("tap").info(f"[Tap] Payment succeeded for {payment_request_id}")
+			frappe.db.commit()
 
 		elif status in ("FAILED", "DECLINED", "EXPIRED", "CANCELLED"):
 			doc.set_as_failed()
@@ -142,8 +143,8 @@ def tap_charge_webhook(**kwargs):
 			frappe.db.set_value("Integration Request", integration_request_id, "status",upstates, update_modified=False)
 
 			frappe.logger("tap").info(f"[Tap] Payment failed or cancelled for {payment_request_id} with status: {status}")
-
-		frappe.db.commit()
+			frappe.db.commit()
+		
 
 	except Exception:
 		frappe.log_error(frappe.get_traceback(), "Tap Charge Webhook Error")   
