@@ -106,48 +106,68 @@ class TapSettings(Document):
 			}
    
 
+
+
 @frappe.whitelist(allow_guest=True)
 def tap_charge_webhook(**kwargs):
-	"""Webhook to handle Tap payment status updates"""
-	try:
-		frappe.set_user('Administrator')
-		data = frappe.parse_json(kwargs)
-		frappe.log_error(message=frappe.as_json(data), title="Payment Update Webhook Data")
-		charge = data
-		status = charge.get("status")
-		transaction_date = format_timestamp_frappe(
-            data.get("transaction", {}).get("created"),
-            data.get("transaction", {}).get("timezone")
+    """Webhook to handle Tap payment status updates"""
+    try:
+        frappe.set_user('Administrator')
+
+        data = frappe.parse_json(kwargs)
+        frappe.log_error(message=frappe.as_json(data), title="Tap Webhook: Raw Data Received")
+
+        charge = data
+        status = charge.get("status")
+
+        # Extract transaction date if available
+        transaction_date = None
+        try:
+            transaction_date = format_timestamp_frappe(
+                charge.get("transaction", {}).get("created"),
+                charge.get("transaction", {}).get("timezone")
+            )
+        except Exception as e:
+            frappe.log_error(f"Failed to format transaction timestamp: {str(e)}", "Tap Webhook")
+
+        payment_request_id = (
+            charge.get("metadata", {}).get("payment_request_id")
+            or charge.get("reference", {}).get("transaction")
         )
-		payment_request_id = charge.get("metadata", {}).get("payment_request_id") or charge.get("reference", {}).get("transaction")
-		integration_request_id = charge.get("metadata", {}).get("integration_request_id") or charge.get("reference", {}).get("internal_reference")
-		
+        integration_request_id = (
+            charge.get("metadata", {}).get("integration_request_id")
+            or charge.get("reference", {}).get("internal_reference")
+        )
 
-		if not payment_request_id:
-			frappe.log_error(str(data), "Tap Webhook: Missing payment_request_id")
-			return
+        if not payment_request_id:
+            frappe.log_error(frappe.as_json(data), "Tap Webhook: Missing payment_request_id")
+            return
 
-		doc = frappe.get_doc("Payment Request", payment_request_id)
-		doc.flags.ignore_permissions = True
+        doc = frappe.get_doc("Payment Request", payment_request_id)
+        doc.flags.ignore_permissions = True
 
-		if status in ("CAPTURED", "SUCCEEDED"):
-			doc.set_as_paid()
-			frappe.db.set_value("Integration Request", integration_request_id, "status", "Completed", update_modified=False)
+        if status in ("CAPTURED", "SUCCEEDED"):
+            doc.set_as_paid()
+            frappe.db.set_value("Integration Request", integration_request_id, "status", "Completed", update_modified=False)
 
-			frappe.logger("tap").info(f"[Tap] Payment succeeded for {payment_request_id}")
-			frappe.db.commit()
+            frappe.logger("tap").info(f"[Tap] Payment succeeded for Payment Request: {payment_request_id}")
+            frappe.log_error(f"Payment succeeded: {payment_request_id}", "Tap Webhook")
+            frappe.db.commit()
 
-		elif status in ("FAILED", "DECLINED", "EXPIRED", "CANCELLED"):
-			doc.set_as_failed()
-			upstates = "Cancelled" if status == "CANCELLED" else "Failed"
-			frappe.db.set_value("Integration Request", integration_request_id, "status",upstates, update_modified=False)
+        elif status in ("FAILED", "DECLINED", "EXPIRED", "CANCELLED"):
+            doc.set_as_failed()
+            update_status = "Cancelled" if status == "CANCELLED" else "Failed"
+            frappe.db.set_value("Integration Request", integration_request_id, "status", update_status, update_modified=False)
 
-			frappe.logger("tap").info(f"[Tap] Payment failed or cancelled for {payment_request_id} with status: {status}")
-			frappe.db.commit()
-		
+            frappe.logger("tap").info(f"[Tap] Payment {update_status.lower()} for Payment Request: {payment_request_id}")
+            frappe.log_error(f"Payment {update_status.lower()}: {payment_request_id}", "Tap Webhook")
+            frappe.db.commit()
 
-	except Exception:
-		frappe.log_error(frappe.get_traceback(), "Tap Charge Webhook Error")   
+        else:
+            frappe.log_error(f"Unhandled status '{status}' in webhook", "Tap Webhook")
+
+    except Exception:
+        frappe.log_error(frappe.get_traceback(), "Tap Charge Webhook Error")
 		
         
 
