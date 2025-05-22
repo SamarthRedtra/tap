@@ -80,7 +80,7 @@ class TapSettings(Document):
 				"url": get_url("/") + "api/method/tap.tap.doctype.tap_settings.tap_settings.tap_charge_webhook",
 			},
 			"redirect": {
-				"url": get_url("/orders/{0}".format(order_id)),
+				"url": get_url("/invoices"),
 			}
     	}
 		self.integration_request = create_request_log( payload, service_name="Tap")
@@ -112,6 +112,7 @@ def tap_charge_webhook(**kwargs):
 	try:
 		frappe.set_user('Administrator')
 		data = frappe.parse_json(kwargs)
+		frappe.log_error(message=frappe.as_json(data), title="Payment Update Webhook Data")
 		charge = data
 		status = charge.get("status")
 		transaction_date = format_timestamp_frappe(
@@ -133,14 +134,14 @@ def tap_charge_webhook(**kwargs):
 			doc.set_as_paid()
 			frappe.db.set_value("Integration Request", integration_request_id, "status", "Completed", update_modified=False)
 
-			frappe.logger().info(f"[Tap] Payment succeeded for {payment_request_id}")
+			frappe.logger("tap").info(f"[Tap] Payment succeeded for {payment_request_id}")
 
 		elif status in ("FAILED", "DECLINED", "EXPIRED", "CANCELLED"):
 			doc.set_as_failed()
 			upstates = "Cancelled" if status == "CANCELLED" else "Failed"
 			frappe.db.set_value("Integration Request", integration_request_id, "status",upstates, update_modified=False)
 
-			frappe.logger().info(f"[Tap] Payment failed or cancelled for {payment_request_id} with status: {status}")
+			frappe.logger("tap").info(f"[Tap] Payment failed or cancelled for {payment_request_id} with status: {status}")
 
 		frappe.db.commit()
 
